@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+    <name>Active_links</name>
+    <version>1.0.0</version>
+    <author>Seyidov Murad</author>
+    <code>active_links</code>
+    <description>Add custom links to column_left</description>
+    <file path="admin/controller/common/column_left.php">
+        <operation>
+            <search><![CDATA[// System]]></search>
+            <add position="before"><![CDATA[
+                if ($this->user->hasPermission('access', 'extension/module/active_links')) {
+                    $data['menus'][] = array(
+                        'id'       => 'menu-active-links',
+                        'icon'	   => 'fa-link',
+                        'name'	   => 'Active Links',
+                        'href'     => $this->url->link('extension/module/active_links/table', 'user_token=' . $this->session->data['user_token'], true),
+                        'children' => array()
+                    );
+                }  
+            ]]></add>
+        </operation>
+        <operation>
+            <search><![CDATA[// System]]></search>
+            <add position="before"><![CDATA[
+                $this->load->model('extension/module/active_links');
+
+                $columns = array();
+
+                $columns = $this->model_extension_module_active_links->getList();
+
+                if($columns) {
+                    foreach($columns as $val) {
+                        if($val['status']) {
+                            $data['menus'][] = array(
+                                'id'       => $val['html_id'],
+                                'icon'	   => $val['icon'],
+                                'name'	   => $val['name'],
+                                'href'     => $this->url->link($val['href'], 'user_token=' . $this->session->data['user_token'], true),
+                                'children' => array()
+                            );
+                        }
+                    }
+                }
+            ]]>
+            </add>
+        </operation>
+    </file>
+</modification>
