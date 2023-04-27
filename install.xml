@@ -45,5 +45,53 @@
             ]]>
             </add>
         </operation>
+        <operation>
+            <search><![CDATA[('access',]]></search>
+            <add position="replace"><![CDATA[('view',]]>
+            </add>
+        </operation>
+    </file>
+    <file path="admin/controller/user/user_permission.php">
+        <operation>
+            <search><![CDATA[ if (isset($this->request->post['permission']['modify'])) { ]]></search>
+            <add position="before"><![CDATA[
+                if (isset($this->request->post['permission']['view'])) {
+                    $data['view'] = $this->request->post['permission']['view'];
+                } elseif (isset($user_group_info['permission']['view'])) {
+                    $data['view'] = $user_group_info['permission']['view'];
+                } else {
+                    $data['view'] = array();
+                }
+                ]]>
+            </add>
+        </operation>
+    </file>
+    <file path="admin/view/template/user/user_group_form.twig">
+        <operation>
+            <search><![CDATA[ <label class="col-sm-2 control-label">{{ entry_modify }}</label> ]]></search>
+            <add position="before"><![CDATA[
+                <div class="form-group">
+            <label class="col-sm-2 control-label">View Permission</label>
+            <div class="col-sm-10">
+              <div class="well well-sm" style="height: 150px; overflow: auto;">
+                {% for permission in permissions %}
+                <div class="checkbox">
+                  <label>
+                    {% if permission in view %}
+                    <input type="checkbox" name="permission[view][]" value="{{ permission }}" checked="checked" />
+                    {{ permission }}
+                    {% else %}
+                    <input type="checkbox" name="permission[view][]" value="{{ permission }}" />
+                    {{ permission }}
+                    {% endif %}
+                  </label>
+                </div>
+                {% endfor %}
+              </div>
+              <button type="button" onclick="$(this).parent().find(':checkbox').prop('checked', true);" class="btn btn-link">{{ text_select_all }}</button> / <button type="button" onclick="$(this).parent().find(':checkbox').prop('checked', false);" class="btn btn-link">{{ text_unselect_all }}</button></div>
+          </div>
+                ]]>
+            </add>
+        </operation>
     </file>
 </modification>
