@@ -60,7 +60,7 @@
                 } elseif (isset($user_group_info['permission']['view'])) {
                     $data['view'] = $user_group_info['permission']['view'];
                 } else {
-                    $data['view'] = array();
+                    $data['view'] = $data['access'];
                 }
                 ]]>
             </add>
